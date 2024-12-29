@@ -192,7 +192,7 @@
             const password = document.getElementById('password').value;
 
             // Check credentials
-            if (username === 'KOUSHALSTAR' && password === 'OrpaK@1223!') {
+            if (username === 'Orpak' && password === 'OrpaK@1223!') {
                 loginMessage.textContent = ''; // Clear any previous messages
                 loginContainer.style.display = 'none'; // Hide login form
                 logoutContainer.style.display = 'block'; // Show logout button
