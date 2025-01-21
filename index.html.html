@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+            background: linear-gradient(to bottom right, #e0f7fa, #80deea); /* Lighter gradient for a fresh look */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
@@ -16,20 +16,21 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+            min-height: 100vh; /* Ensure full height */
         }
         h1 {
             color: #007BFF;
             text-align: center;
             margin-bottom: 20px;
             font-size: 2.5em;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Softer shadow for h1 */
         }
         .maker-name {
             position: absolute;
             top: 20px;
             left: 20px;
             font-size: 0.8em;
-            color: #333;
+            color: #007BFF; /* Change color to match theme */
         }
         .login-container {
             text-align: center;
@@ -38,7 +39,9 @@
             background-color: #ffffff;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 100%; /* Full width */
+            max-width: 400px; /* Limit max width */
         }
         input[type="text"], input[type="password"] {
             width: calc(100% - 22px);
@@ -47,6 +50,11 @@
             border-radius: 4px;
             border: 1px solid #ccc;
             font-size: 1em;
+            transition: border 0.3s; /* Smooth border transition */
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #007BFF; /* Highlight border on focus */
+            outline: none; /* Remove default outline */
         }
         button {
             background-color: #007BFF;
@@ -57,10 +65,11 @@
             cursor: pointer;
             width: 100%;
             font-size: 1em;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s; /* Add transform for hover effect */
         }
         button:hover {
             background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge button on hover */
         }
         .notice-board, .updates-board {
             display: none; /* Initially hidden */
@@ -75,6 +84,11 @@
             text-align: left;
             color: red; /* Change notice text color to red */
             overflow: hidden; /* Hide overflowing content */
+        }
+        .notice-title, .update-title {
+            color: #007BFF; /* Blue color for the title */
+            font-size: 1.5em; /* Font size for the title */
+            margin-bottom: 10px; /* Margin below the title */
         }
         .notice-content {
             height: auto; /* Allow height to adjust to content */
@@ -92,11 +106,6 @@
             right: 20px; /* Align to the right */
             top: 100px; /* Position from the top */
             background-color: rgba(173, 216, 230, 0.9); /* Light blue background */
-        }
-        .notice-title, .update-title {
-            color: #007BFF; /* Blue color for the title */
-            font-size: 1.5em; /* Font size for the title */
-            margin-bottom: 10px; /* Margin below the title */
         }
         .box {
             background-color: #ffffff; /* White background for boxes */
@@ -174,6 +183,21 @@
             color: #dc3545; /* Highlight color for logout icon */
             transform: scale(1.2); /* Slightly increase size */
             transition: transform 0.3s ease, color 0.3s ease; /* Transition for smooth effect */
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em; /* Smaller font size for smaller screens */
+            }
+            .login-container, .notice-board, .updates-board, .box {
+                width: 90%; /* Full width for smaller screens */
+                max-width: none; /* Remove max width */
+            }
+            .software-item, .mandatory-item {
+                height: auto; /* Allow height to adjust */
+                padding: 10px; /* Adjust padding */
+            }
         }
     </style>
 </head>
@@ -259,8 +283,6 @@
         const noticeBoard = document.getElementById('noticeBoard');
         const updatesBoard = document.getElementById('updatesBoard');
         const notices = document.querySelectorAll('.notice');
-
-        let interval; // Variable to hold the interval
 
         loginButton.addEventListener('click', function () {
             const username = document.getElementById('username').value;
