@@ -31,22 +31,17 @@
             font-size: 0.8em;
             color: #333;
         }
-        .login-container, .logout-container {
+        .login-container {
             text-align: center;
             margin-bottom: 20px;
             transition: all 0.3s ease;
-        }
-        .login-container {
-            width: 100%;
-            max-width: 300px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 12px;
             background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         input[type="text"], input[type="password"] {
-            width: 100%;
+            width: calc(100% - 22px);
             padding: 10px;
             margin: 5px 0;
             border-radius: 4px;
@@ -67,12 +62,6 @@
         button:hover {
             background-color: #0056b3;
         }
-        .logout-button {
-            background-color: #dc3545;
-            padding: 5px 10px;
-            margin-top: 10px;
-            width: auto;
-        }
         .notice-board, .updates-board {
             display: none; /* Initially hidden */
             background-color: rgba(255, 215, 0, 0.9); /* Gold background with transparency */
@@ -85,7 +74,15 @@
             position: absolute; /* Position it absolutely */
             text-align: left;
             color: red; /* Change notice text color to red */
-            transition: all 0.3s ease; /* Transition for smooth appearance */
+            overflow: hidden; /* Hide overflowing content */
+        }
+        .notice-content {
+            height: auto; /* Allow height to adjust to content */
+            overflow: visible; /* Show all content */
+        }
+        .notice {
+            padding: 5px 0; /* Spacing between notices */
+            display: none; /* Initially hide each notice */
         }
         .notice-board {
             left: 20px; /* Align to the left */
@@ -95,10 +92,6 @@
             right: 20px; /* Align to the right */
             top: 100px; /* Position from the top */
             background-color: rgba(173, 216, 230, 0.9); /* Light blue background */
-        }
-        .notice, .update {
-            margin: 10px 0; /* Space between notices */
-            font-size: 1.1em; /* Slightly larger font for notices */
         }
         .notice-title, .update-title {
             color: #007BFF; /* Blue color for the title */
@@ -170,13 +163,17 @@
             top: 20px;
             right: 20px; /* Shift logout button to the right */
         }
-        .floating-buttons button {
+        .logout-button {
             background-color: transparent;
             border: none;
             cursor: pointer;
-            margin-bottom: 10px;
             font-size: 24px;
-            color: #007BFF;
+            color: #dc3545; /* Red color for logout icon */
+        }
+        .highlight {
+            color: #dc3545; /* Highlight color for logout icon */
+            transform: scale(1.2); /* Slightly increase size */
+            transition: transform 0.3s ease, color 0.3s ease; /* Transition for smooth effect */
         }
     </style>
 </head>
@@ -192,16 +189,14 @@
         <div id="loginMessage" style="color: red;"></div>
     </div>
 
-    <div class="logout-container" id="logoutContainer" style="display: none;">
-        <button class="logout-button" id="logoutButton">Logout</button>
-    </div>
-
     <div class="notice-board" id="noticeBoard">
         <div class="notice-title">Notice Board</div>
-        <div class="notice">1. HPCL ITPS Verification With L1 & HPCL ITPS Transaction History.</div>
-        <div class="notice">2. HPCL, IOCL, BPCL And NAYARA New Software Need to Update On All Sites.</div>
-        <div class="notice">3. HPCL MS To Petrol e20 Conversion need to Update in FCC.</div>
-        <div class="notice">4. Take All Sites Access Details with ID And Password.</div>
+        <div class="notice-content">
+            <div class="notice">1. HPCL ITPS Verification With L1 & HPCL ITPS Transaction History.</div>
+            <div class="notice">2. HPCL, IOCL, BPCL And NAYARA New Software Need to Update On All Sites.</div>
+            <div class="notice">3. HPCL MS To Petrol e20 Conversion need to Update in FCC.</div>
+            <div class="notice">4. Take All Sites Access Details with ID And Password.</div>
+        </div>
     </div>
 
     <div class="updates-board" id="updatesBoard">
@@ -250,21 +245,22 @@
 
     <div class="floating-buttons">
         <button id="loginIcon" title="Login"><i class="fas fa-sign-in-alt"></i></button>
-        <button id="logoutIcon" title="Logout" style="display: none;"><i class="fas fa-sign-out-alt"></i></button>
+        <button class="logout-button" id="logoutIcon" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <script>
         const loginButton = document.getElementById('loginButton');
-        const logoutButton = document.getElementById('logoutButton');
         const loginIcon = document.getElementById('loginIcon');
         const logoutIcon = document.getElementById('logoutIcon');
         const mainContent = document.getElementById('mainContent');
         const sopContent = document.getElementById('sopContent');
         const loginContainer = document.getElementById('loginContainer');
-        const logoutContainer = document.getElementById('logoutContainer');
         const loginMessage = document.getElementById('loginMessage');
         const noticeBoard = document.getElementById('noticeBoard');
         const updatesBoard = document.getElementById('updatesBoard');
+        const notices = document.querySelectorAll('.notice');
+
+        let interval; // Variable to hold the interval
 
         loginButton.addEventListener('click', function () {
             const username = document.getElementById('username').value;
@@ -274,46 +270,39 @@
             if (username === 'Orpak' && password === 'U$4F7dc8') {
                 loginMessage.textContent = ''; // Clear any previous messages
                 loginContainer.style.display = 'none'; // Hide login form
-                logoutContainer.style.display = 'block'; // Show logout button
                 mainContent.style.display = 'block'; // Show main content
                 sopContent.style.display = 'block'; // Show SOP content
                 noticeBoard.style.display = 'block'; // Show notice board
                 updatesBoard.style.display = 'block'; // Show updates board
-                logoutIcon.style.display = 'block'; // Show logout icon
                 loginIcon.style.display = 'none'; // Hide login icon
+                logoutIcon.style.display = 'block'; // Show logout icon
+                logoutIcon.classList.add('highlight'); // Highlight logout icon
 
-                // Start blinking effect for the update points
-                const updates = document.querySelectorAll('.update');
-                setInterval(() => {
-                    updates.forEach(update => {
-                        update.style.visibility = update.style.visibility === 'hidden' ? 'visible' : 'hidden';
-                    });
-                }, 1000); // Blink every 1 second
+                // Show all notices immediately
+                notices.forEach(notice => {
+                    notice.style.display = 'block'; // Show all notices
+                });
             } else {
                 loginMessage.textContent = 'Invalid username or password.';
             }
         });
 
-        logoutButton.addEventListener('click', function () {
+        logoutIcon.addEventListener('click', function () {
             loginContainer.style.display = 'block'; // Show login form
-            logoutContainer.style.display = 'none'; // Hide logout button
             mainContent.style.display = 'none'; // Hide main content
             sopContent.style.display = 'none'; // Hide SOP content
             noticeBoard.style.display = 'none'; // Hide notice board
             updatesBoard.style.display = 'none'; // Hide updates board
             document.getElementById('username').value = ''; // Clear username field
             document.getElementById('password').value = ''; // Clear password field
-            logoutIcon.style.display = 'none'; // Hide logout icon
             loginIcon.style.display = 'block'; // Show login icon
-        });
-
-        // Add click event to icons
-        loginIcon.addEventListener('click', function () {
-            loginContainer.style.display = 'block'; // Show login form
-        });
-
-        logoutIcon.addEventListener('click', function () {
-            logoutButton.click(); // Trigger logout
+            logoutIcon.style.display = 'none'; // Hide logout icon
+            logoutIcon.classList.remove('highlight'); // Remove highlight from logout icon
+            
+            // Reset notices display
+            notices.forEach(notice => {
+                notice.style.display = 'none'; // Hide all notices
+            });
         });
     </script>
 </body>
