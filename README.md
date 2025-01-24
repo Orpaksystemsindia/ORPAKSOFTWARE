@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -69,6 +70,25 @@
         button:hover {
             background-color: #0056b3;
             transform: scale(1.05);
+        }
+        .critical-probe-snaps {
+            display: none; /* Initially hidden */
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Small size */
+            font-size: 0.9em; /* Smaller font size */
+            position: relative; /* Position relative for stacking context */
+        }
+        .toggle-arrow {
+            cursor: pointer;
+            color: #007BFF;
+            font-size: 1.5em;
+            margin-bottom: 10px;
         }
         .notice-board, .updates-board {
             display: none;
@@ -227,7 +247,7 @@
             h1 {
                 font-size: 1.8em;
             }
-            .login-container, .notice-board, .updates-board, .box {
+            .login-container, .notice-board, .updates-board, .box, .critical-probe-snaps {
                 width: 90%;
                 max-width: none;
             }
@@ -241,6 +261,32 @@
 <body>
     <div class="maker-name">KoushalStar</div>
     <h1>Welcome To Orpak Software and SOPs</h1>
+
+    <div class="critical-probe-snaps" id="criticalProbeSnaps">
+        <div class="toggle-arrow" id="toggleArrow">
+            <i class="fas fa-chevron-down"></i> Critical ATG Probe Snaps
+        </div>
+        <div class="critical-probe-content" id="criticalProbeContent" style="display: none;">
+            <ol>
+                <li>Electrical audit to be done for AC input inside ATG Console</li>
+                <li>For barrier cards DC input to console and DC output to probes to be checked.</li>
+                <li>For barrier communication port volt to be checked at in and out for Probe both.</li>
+                <li>Communication Volt from ATG console and Master WGT separately to be checked.</li>
+                <li>Probe connection inside Console as well as Tank chamber to be checked as per standard installation & direct probe checking method to be applied.</li>
+                <li>Connection for earthing and shield cables to be properly tightened and thimble/LUX may be used to connect properly with Console body.</li>
+                <li>Probe installation inside tank chamber.</li>
+                <li>Distance between probe and STP or Dicant Pipe (305 mm or 610mm)</li>
+                <li>Product, Density & Water Floats with magnet ring to be checked properly</li>
+                <li>Probe Serial Number and manufacture year to be checked for warranty claim replacement</li>
+                <li>TLS 4B - Check Probe Sr. No. it’s correct or 000000. (In Setup then Devices)</li>
+                <li>In Diagnostics/Probe/Overview menu check Probe data for send and received.</li>
+                <li>Inventory report for last 15 days to be downloaded</li>
+                <li>Alarm Report for last 15 days to be downloaded for any Probe behavior</li>
+                <li>Event log report for last 15 days to correlate with Alarm report and FCC Uptime</li>
+                <li>Tank Truck Receipts report if any dummy receipt captured or post decantation what was the max height captured for product</li>
+            </ol>
+        </div>
+    </div>
 
     <div class="login-container" id="loginContainer">
         <h2>Login</h2>
@@ -283,7 +329,9 @@
 
         <h2>Mandatory Activities</h2>
         <div class="mandatory-container">
-            <div class="mandatory-item" id="hpclVendor"> <a href="#">Critical Part Validation</a></div>
+            <div class="mandatory-item" id="hpclVendor"> 
+                <a href="https://drive.google.com/file/d/1ac418hLzLG4-FYYqEtTccZMU1E1X-dpW/view?usp=sharing" target="_blank">Critical Part Validation</a>
+            </div>
             <div class="mandatory-item" id="bpclBLNo"> <a href="#">Mandatory Activity 2</a></div>
             <div class="mandatory-item" id="hpclItpsVendor"> <a href="#">HPCL itps vender</a></div>
             <div class="mandatory-item" id="bpclBL"> <a href="#">BPCL BL No.</a></div>
@@ -333,6 +381,9 @@
         const noticeBoard = document.getElementById('noticeBoard');
         const updatesBoard = document.getElementById('updatesBoard');
         const notices = document.querySelectorAll('.notice');
+        const criticalProbeSnaps = document.getElementById('criticalProbeSnaps');
+        const criticalProbeContent = document.getElementById('criticalProbeContent');
+        const toggleArrow = document.getElementById('toggleArrow');
 
         // Popup functionality
         const roCodePopup = document.getElementById('roCodePopup');
@@ -341,7 +392,7 @@
         const resultMessage = document.getElementById('resultMessage');
 
         const data = [
-           { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
+                 { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
     { "RoCode": "119967", "Result": "NAWAL KISHORE & CO-2008500" },
     { "RoCode": "143802", "Result": "JAIRAJ & COMPANY-2004245" },
     { "RoCode": "183221", "Result": "BP RAJGARH-2008551" },
@@ -1388,6 +1439,12 @@
             }
         };
 
+        toggleArrow.onclick = function() {
+            const isVisible = criticalProbeContent.style.display === 'block';
+            criticalProbeContent.style.display = isVisible ? 'none' : 'block';
+            toggleArrow.innerHTML = isVisible ? '<i class="fas fa-chevron-down"></i> Critical ATG Probe Snaps' : '<i class="fas fa-chevron-up"></i> Critical ATG Probe Snaps';
+        };
+
         loginButton.addEventListener('click', function () {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -1400,6 +1457,7 @@
                 sopContent.style.display = 'block';
                 noticeBoard.style.display = 'block';
                 updatesBoard.style.display = 'block';
+                criticalProbeSnaps.style.display = 'none'; // Hide the critical probe snaps box
                 loginIcon.style.display = 'none';
                 logoutIcon.style.display = 'block';
                 logoutIcon.classList.add('highlight');
@@ -1419,12 +1477,13 @@
             sopContent.style.display = 'none';
             noticeBoard.style.display = 'none';
             updatesBoard.style.display = 'none';
+            criticalProbeSnaps.style.display = 'block'; // Show the critical probe snaps box again
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             loginIcon.style.display = 'block';
             logoutIcon.style.display = 'none';
             logoutIcon.classList.remove('highlight');
-            
+
             // Reset notices display
             notices.forEach(notice => {
                 notice.style.display = 'none';
