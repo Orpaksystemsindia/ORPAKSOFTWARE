@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,15 +49,15 @@
         input[type="text"], input[type="password"] {
             width: calc(100% - 22px);
             padding: 10px;
-            margin: 5px 0;
+            margin: 10px 0; /* Increased margin for better spacing */
             border-radius: 4px;
             border: 1px solid #ccc;
             font-size: 1em;
             transition: border 0.3s;
+            outline: none; /* Remove outline */
         }
         input[type="text"]:focus, input[type="password"]:focus {
             border-color: #007BFF;
-            outline: none;
         }
         button {
             background-color: #007BFF;
@@ -68,10 +69,23 @@
             width: 100%;
             font-size: 1em;
             transition: background-color 0.3s ease, transform 0.3s;
+            display: flex; /* Allow for icon alignment */
+            align-items: center; /* Center text and icons vertically */
+            outline: none; /* Remove outline */
         }
         button:hover {
             background-color: #0056b3;
             transform: scale(1.05);
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+        }
+        .loading-indicator {
+            display: none; /* Hidden by default */
+            margin-top: 10px;
+            color: #007BFF;
         }
         .critical-probe-snaps {
             display: none; /* Initially hidden */
@@ -206,6 +220,26 @@
             transition: transform 0.3s ease, color 0.3s ease;
         }
 
+        /* Dark Green Icon */
+        .dark-green-icon {
+            position: fixed;
+            top: 20px; /* Adjust this value to position it vertically */
+            right: 20px; /* Adjust this value to position it horizontally */
+            background-color: #006400; /* Dark Green */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none; /* Hidden initially */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 24px;
+            transform: translateY(-50%); /* Center it vertically */
+        }
+
         /* Popup Styles */
         .popup {
             display: none; /* Hidden by default */
@@ -227,7 +261,7 @@
             width: 90%; /* Adjust the width to make it smaller */
             max-width: 400px; /* Set a maximum width */
         }
-        .popup input[type="text"], .popup input[type="password"] {
+        .popup input[type="text"] {
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #ccc;
@@ -287,8 +321,8 @@
     <div class="maker-name">KoushalStar</div>
     <h1>Welcome To Orpak Software and SOPs</h1>
 
-    <div class="critical-probe-snaps" id="criticalProbeSnaps">
-        <div class="toggle-arrow" id="toggleArrow">
+    <div class="critical-probe-snaps" id="criticalProbeSnaps" role="region" aria-labelledby="criticalProbeTitle">
+        <div class="toggle-arrow" id="toggleArrow" tabindex="0" role="button" aria-expanded="false" aria-controls="criticalProbeContent">
             <i class="fas fa-chevron-down"></i> Critical ATG Probe Snaps
         </div>
         <div class="critical-probe-content" id="criticalProbeContent" style="display: none;">
@@ -313,31 +347,32 @@
         </div>
     </div>
 
-    <div class="login-container" id="loginContainer">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button id="loginButton">Login</button>
-        <div id="loginMessage" style="color: red;"></div>
+    <div class="login-container" id="loginContainer" role="form" aria-labelledby="loginHeader">
+        <h2 id="loginHeader">Login</h2>
+        <input type="text" id="username" placeholder="Username" required aria-required="true" aria-label="Username">
+        <input type="password" id="password" placeholder="Password" required aria-required="true" aria-label="Password">
+        <button id="loginButton" aria-label="Login"><i class="fas fa-sign-in-alt"></i> Login</button>
+        <div class="loading-indicator" id="loadingIndicator"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        <div id="loginMessage" class="error-message" role="alert"></div>
     </div>
 
-    <div class="notice-board" id="noticeBoard">
-        <div class="notice-title">Notice Board</div>
+    <div class="notice-board" id="noticeBoard" role="region" aria-labelledby="noticeBoardTitle">
+        <div class="notice-title" id="noticeBoardTitle">Notice Board</div>
         <div class="notice-content">
-            <div class="notice">1. HPCL ITPS Verification With L1 & HPCL ITPS Transaction History.</div>
-            <div class="notice">2. HPCL, IOCL, BPCL And NAYARA New Software Need to Update On All Sites.</div>
-            <div class="notice">3. HPCL MS To Petrol e20 Conversion need to Update in FCC.</div>
-            <div class="notice">4. Take All Sites Access Details with ID And Password.</div>
-            <div class="notice">5. Need Upgradation of all OIL Comp.</div>
+            <div class="notice">1. VR ATG Probe follow the instruction of consumption</div>
+            <div class="notice">2. Probe installation upload the Snaps</div>
+            <div class="notice">3. HPCL ITPS Verification With L1 & HPCL ITPS Transaction History.</div>
+            <div class="notice">4. HPCL, IOCL, BPCL And NAYARA New Software Need to Update On All Sites</div>
+            <div class="notice">5. Take All Sites Access Details with ID And Password.</div>
         </div>
     </div>
 
-    <div class="updates-board" id="updatesBoard">
-        <div class="update-title">Upcoming Updates</div>
+    <div class="updates-board" id="updatesBoard" role="region" aria-labelledby="updatesBoardTitle">
+        <div class="update-title" id="updatesBoardTitle">Upcoming Updates</div>
         <div class="update" id="update1">1. Critical Material Rank</div>
-        <div class="update" id="update2">2. UPS Repair SOP's</div>
+        <div class="update" id="update2">2. UPS Repair SOP Updated</div>
         <div class="update" id="update3">3. Software Status</div>
-        <div class="update" id="update4">4. Engineer Assessments Test Ranking Status</div>
+        <div class="update" id="update4">4. Assessments Test Ranking Status Updated </div>
     </div>
 
     <div class="box" id="mainContent" style="display: none;">
@@ -383,41 +418,61 @@
     </div>
 
     <div class="floating-buttons">
-        <button id="loginIcon" title="Login"><i class="fas fa-sign-in-alt"></i></button>
-        <button class="logout-button" id="logoutIcon" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        <button id="loginIcon" title="Login" aria-label="Login"><i class="fas fa-sign-in-alt"></i></button>
+        <button class="logout-button" id="logoutIcon" title="Logout" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <!-- Dark Green Icon -->
+    <button class="dark-green-icon" id="darkGreenIcon" title="Assisment Test Rank" style="display: none;" aria-label="Assessment Test Rank">
+        <i class="fas fa-search"></i>
+    </button>
+
+    <!-- Search Data Popup -->
+    <div class="popup" id="searchDataPopup" role="dialog" aria-labelledby="searchDataTitle" aria-modal="true">
+        <div class="popup-content">
+            <h2 id="searchDataTitle">Search Data</h2>
+            <input type="text" id="fseTeamId" placeholder="FSE Team Id" aria-label="FSE Team Id" />
+            <input type="text" id="fsePersonId" placeholder="FSE Person Id" aria-label="FSE Person Id" />
+            <input type="text" id="employeeCode" placeholder="Employee Code" aria-label="Employee Code" />
+            <button id="searchButton" aria-label="Search"><i class="fas fa-search"></i> Search</button>
+            <div class="loading-indicator" id="searchLoadingIndicator"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+            <button id="closeSearchPopup" aria-label="Close Search Popup">Close</button>
+            <div class="result-box" id="searchResult" style="display: none;"></div>
+            <div class="error-message" id="searchErrorMessage" role="alert"></div>
+        </div>
     </div>
 
     <!-- New Popup for TeamViewer Input -->
-    <div class="popup" id="teamViewerPopup">
+    <div class="popup" id="teamViewerPopup" role="dialog" aria-labelledby="teamViewerTitle" aria-modal="true">
         <div class="popup-content">
-            <h2>Enter TeamViewer Details</h2>
-            <input type="text" id="roCodeInput" placeholder="Ro Code" required>
-            <input type="text" id="roNameInput" placeholder="Ro Name" required>
-            <input type="text" id="teamViewerIdInput" placeholder="TeamViewer Id" required>
-            <input type="password" id="teamViewerPassInput" placeholder="TeamViewer Password" required>
-            <input type="password" id="adminPassInput" placeholder="Admin Password" required>
-            <button id="submitTeamViewerDetails">Submit</button>
-            <button id="closeTeamViewerPopup">Close</button>
+            <h2 id="teamViewerTitle">Enter TeamViewer Details</h2>
+            <input type="text" id="roCodeInput" placeholder="Ro Code" required aria-required="true" aria-label="Ro Code">
+            <input type="text" id="roNameInput" placeholder="Ro Name" required aria-required="true" aria-label="Ro Name">
+            <input type="text" id="teamViewerIdInput" placeholder="TeamViewer Id" required aria-required="true" aria-label="TeamViewer Id">
+            <input type="password" id="teamViewerPassInput" placeholder="TeamViewer Password" required aria-required="true" aria-label="TeamViewer Password">
+            <input type="password" id="adminPassInput" placeholder="Admin Password" required aria-required="true" aria-label="Admin Password">
+            <button id="submitTeamViewerDetails" aria-label="Submit TeamViewer Details"><i class="fas fa-paper-plane"></i> Submit</button>
+            <button id="closeTeamViewerPopup" aria-label="Close TeamViewer Popup">Close</button>
             <div class="result-box" id="teamViewerResultMessage" style="display: none;"></div>
         </div>
     </div>
 
     <!-- New Confirmation Popup -->
-    <div class="confirmation-popup" id="confirmationPopup">
+    <div class="confirmation-popup" id="confirmationPopup" role="dialog" aria-labelledby="confirmationTitle" aria-modal="true">
         <div class="confirmation-popup-content">
-            <h2>Data Submitted</h2>
+            <h2 id="confirmationTitle">Data Submitted</h2>
             <p>Thank You for Support</p>
-            <button id="closeConfirmationPopup">Close</button>
+            <button id="closeConfirmationPopup" aria-label="Close Confirmation Popup">Close</button>
         </div>
     </div>
 
     <!-- Popup for Ro Code Entry -->
-    <div class="popup" id="roCodePopup">
+    <div class="popup" id="roCodePopup" role="dialog" aria-labelledby="roCodeTitle" aria-modal="true">
         <div class="popup-content">
-            <h2>Enter Ro Code</h2>
-            <input type="text" id="roCode" placeholder="Ro Code" required>
-            <button id="submitRoCode">Submit</button>
-            <button id="closePopup">Close</button>
+            <h2 id="roCodeTitle">Enter Ro Code</h2>
+            <input type="text" id="roCode" placeholder="Ro Code" required aria-required="true" aria-label="Ro Code">
+            <button id="submitRoCode" aria-label="Submit Ro Code"><i class="fas fa-paper-plane"></i> Submit</button>
+            <button id="closePopup" aria-label="Close Ro Code Popup">Close</button>
             <div class="result-box" id="resultMessage" style="display: none;"></div>
         </div>
     </div>
@@ -436,6 +491,101 @@
         const criticalProbeSnaps = document.getElementById('criticalProbeSnaps');
         const criticalProbeContent = document.getElementById('criticalProbeContent');
         const toggleArrow = document.getElementById('toggleArrow');
+
+        // Loading indicators
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const searchLoadingIndicator = document.getElementById('searchLoadingIndicator');
+        const searchErrorMessage = document.getElementById('searchErrorMessage');
+
+        // Dark Green Icon functionality
+        const darkGreenIcon = document.getElementById('darkGreenIcon');
+        const searchDataPopup = document.getElementById('searchDataPopup');
+        const closeSearchPopup = document.getElementById('closeSearchPopup');
+        const searchButton = document.getElementById('searchButton');
+        const searchResult = document.getElementById('searchResult');
+
+        // Data for searching
+        const data = [
+            { "FSE Team Id": "OIRJFSE14", "FSE Person Id": "VIJENDRAS", "Employee Code": "3256829", "Percentage": 60, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE27", "FSE Person Id": "CHETANP", "Employee Code": "3256856", "Percentage": 57, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE23", "FSE Person Id": "AMITP", "Employee Code": "3256914", "Percentage": 73, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE03", "FSE Person Id": "YOGESHKS", "Employee Code": "3257267", "Percentage": 70, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE25", "FSE Person Id": "MADHUK", "Employee Code": "3256818", "Percentage": 80, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE13", "FSE Person Id": "ARJUNT", "Employee Code": "3256825", "Percentage": 73, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE18", "FSE Person Id": "MAHESHKS", "Employee Code": "3256839", "Percentage": 73, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE29", "FSE Person Id": "MAHENDRAP", "Employee Code": "3256850", "Percentage": 77, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE21", "FSE Person Id": "HITESHS", "Employee Code": "3256949", "Percentage": 77, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE02", "FSE Person Id": "SAVANR", "Employee Code": "3256855", "Percentage": 77, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE01", "FSE Person Id": "N/A", "Employee Code": "A092478692", "Percentage": 53, "Year Points": 2 },
+    { "FSE Team Id": "OIRJFSE34", "FSE Person Id": "BLKISHANA", "Employee Code": "A092479411", "Percentage": 50, "Year Points": 2 },
+    { "FSE Team Id": "OIRJFSE28", "FSE Person Id": "VINODKB", "Employee Code": "3256875", "Percentage": 70, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE16", "FSE Person Id": "SUKHMANDERS", "Employee Code": "100546790", "Percentage": 90, "Year Points": 5 },
+    { "FSE Team Id": "OIRJFSE33", "FSE Person Id": "PIYUSHS", "Employee Code": "3256846", "Percentage": 70, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE31", "FSE Person Id": "ARJUNN", "Employee Code": "3368696", "Percentage": 67, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE24", "FSE Person Id": "Bherudl", "Employee Code": "3256944", "Percentage": 83, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE03", "FSE Person Id": "ALOKS", "Employee Code": "3256886", "Percentage": 87, "Year Points": 5 },
+    { "FSE Team Id": "OIRJFSE12", "FSE Person Id": "PRATAPS", "Employee Code": "3256945", "Percentage": 77, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE05", "FSE Person Id": "RAVIKANTS", "Employee Code": "3256889", "Percentage": 73, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE19", "FSE Person Id": "PAWANKM", "Employee Code": "3256874", "Percentage": 77, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE09", "FSE Person Id": "PANKAJS", "Employee Code": "3256887", "Percentage": 73, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE01", "FSE Person Id": "SURAJB", "Employee Code": "3256912", "Percentage": 77, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE08", "FSE Person Id": "JAIS", "Employee Code": "3256923", "Percentage": 60, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE11", "FSE Person Id": "SHAITANS", "Employee Code": "3256895", "Percentage": 53, "Year Points": 3 },
+    { "FSE Team Id": "OIRJFSE22", "FSE Person Id": "SURENDARBC", "Employee Code": "3601764", "Percentage": 77, "Year Points": 4 },
+    { "FSE Team Id": "OIRJFSE15", "FSE Person Id": "GOPALS", "Employee Code": "3256827", "Percentage": 50, "Year Points": 2 },
+    { "FSE Team Id": "OIRJFSE35", "FSE Person Id": "HITESHB", "Employee Code": "3637536", "Percentage": 0, "Year Points": 0 },
+    { "FSE Team Id": "OIRJFSE07", "FSE Person Id": "ALAMERK", "Employee Code": "3256870", "Percentage": 67, "Year Points": 3 }
+// Add more entries as needed...
+        ];
+
+        // Show the search data popup when the icon is clicked
+        darkGreenIcon.onclick = function() {
+            searchDataPopup.style.display = 'flex';
+        };
+
+        // Close the search popup
+        closeSearchPopup.onclick = function() {
+            searchDataPopup.style.display = 'none';
+            document.getElementById('fseTeamId').value = '';
+            document.getElementById('fsePersonId').value = '';
+            document.getElementById('employeeCode').value = '';
+            searchResult.style.display = 'none'; // Hide result box
+            searchErrorMessage.style.display = 'none'; // Hide error message
+        };
+
+        // Perform the search when the search button is clicked
+        searchButton.onclick = function() {
+            const fseTeamId = document.getElementById('fseTeamId').value;
+            const fsePersonId = document.getElementById('fsePersonId').value;
+            const employeeCode = document.getElementById('employeeCode').value;
+
+            // Show loading indicator
+            searchLoadingIndicator.style.display = 'block';
+            searchResult.style.display = 'none'; // Hide result box
+            searchErrorMessage.style.display = 'none'; // Hide error message
+
+            // Simulate a delay for loading (remove this in production)
+            setTimeout(() => {
+                const filteredData = data.filter(item => 
+                    (fseTeamId ? item["FSE Team Id"] === fseTeamId : true) &&
+                    (fsePersonId ? item["FSE Person Id"] === fsePersonId : true) &&
+                    (employeeCode ? item["Employee Code"] === employeeCode : true)
+                );
+
+                // Hide loading indicator
+                searchLoadingIndicator.style.display = 'none';
+
+                if (filteredData.length > 0) {
+                    searchResult.style.display = 'block';
+                    searchResult.innerHTML = filteredData.map(item => 
+                        `FSE Team Id: ${item["FSE Team Id"]}, FSE Person Id: ${item["FSE Person Id"]}, Employee Code: ${item["Employee Code"]}, Percentage: ${item.Percentage}, Year Points: ${item["Year Points"]}`
+                    ).join('<br>');
+                } else {
+                    searchErrorMessage.style.display = 'block';
+                    searchErrorMessage.textContent = 'No results found.';
+                }
+            }, 1000); // Simulated loading time
+        };
 
         // Popup functionality for TeamViewer Id
         const teamViewerPopup = document.getElementById('teamViewerPopup');
@@ -523,8 +673,18 @@
         const closePopup = document.getElementById('closePopup');
         const resultMessage = document.getElementById('resultMessage');
 
-        const data = [
-            { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
+        document.getElementById('hpclItpsVendor').onclick = function() {
+            roCodePopup.style.display = 'flex';
+        };
+
+        closePopup.onclick = function() {
+            roCodePopup.style.display = 'none';
+            document.getElementById('roCode').value = ''; // Clear input
+            resultMessage.style.display = 'none'; // Hide result message box
+        };
+
+        const roData = [
+                                    { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
     { "RoCode": "119967", "Result": "NAWAL KISHORE & CO-2008500" },
     { "RoCode": "143802", "Result": "JAIRAJ & COMPANY-2004245" },
     { "RoCode": "183221", "Result": "BP RAJGARH-2008551" },
@@ -1540,23 +1700,11 @@
     { "RoCode": "16636080", "Result": "MAHAKAL FILLING STATION-Paytm" },
     { "RoCode": "16647750", "Result": "JAYRAJ FILLING STATION-IMSL" },
     { "RoCode": "16599710", "Result": "HP Raja Bharadiya FS-Paytm" },
-    { "RoCode": "16598900", "Result": "GAUGHAT FILLING STATION-Paytm" }
-
-        ];
-
-        document.getElementById('hpclItpsVendor').onclick = function() {
-            roCodePopup.style.display = 'flex';
-        };
-
-        closePopup.onclick = function() {
-            roCodePopup.style.display = 'none';
-            document.getElementById('roCode').value = ''; // Clear input
-            resultMessage.style.display = 'none'; // Hide result message box
-        };
+    { "RoCode": "16598900", "Result": "GAUGHAT FILLING STATION-Paytm" }];
 
         submitRoCode.onclick = function() {
             const roCode = document.getElementById('roCode').value;
-            const result = data.find(item => item.RoCode === roCode);
+            const result = roData.find(item => item.RoCode === roCode);
             if (result) {
                 resultMessage.style.display = 'block'; // Show result box
                 resultMessage.textContent = `Result: ${result.Result}`;
@@ -1578,26 +1726,40 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Check credentials
-            if (username === 'Orpak' && password === 'U$4F7dc8') {
-                loginMessage.textContent = '';
-                loginContainer.style.display = 'none';
-                mainContent.style.display = 'block';
-                sopContent.style.display = 'block';
-                noticeBoard.style.display = 'block';
-                updatesBoard.style.display = 'block';
-                criticalProbeSnaps.style.display = 'none'; // Hide the critical probe snaps box
-                loginIcon.style.display = 'none';
-                logoutIcon.style.display = 'block';
-                logoutIcon.classList.add('highlight');
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            loginMessage.style.display = 'none'; // Hide previous error message
 
-                // Show all notices immediately
-                notices.forEach(notice => {
-                    notice.style.display = 'block';
-                });
-            } else {
-                loginMessage.textContent = 'Invalid username or password.';
-            }
+            // Simulate a delay for loading (remove this in production)
+            setTimeout(() => {
+                // Check credentials
+                if (username === 'Orpak' && password === 'U$4F7dc8') {
+                    loginMessage.textContent = '';
+                    loginContainer.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    sopContent.style.display = 'block';
+                    noticeBoard.style.display = 'block';
+                    updatesBoard.style.display = 'block';
+                    criticalProbeSnaps.style.display = 'none'; // Hide the critical probe snaps box
+                    loginIcon.style.display = 'none';
+                    logoutIcon.style.display = 'block';
+                    logoutIcon.classList.add('highlight');
+
+                    // Show the dark green icon
+                    darkGreenIcon.style.display = 'flex';
+
+                    // Show all notices immediately
+                    notices.forEach(notice => {
+                        notice.style.display = 'block';
+                    });
+                } else {
+                    loginMessage.textContent = 'Invalid username or password.';
+                    loginMessage.style.display = 'block'; // Show error message
+                }
+
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+            }, 1000); // Simulated loading time
         });
 
         logoutIcon.addEventListener('click', function () {
@@ -1612,6 +1774,9 @@
             loginIcon.style.display = 'block';
             logoutIcon.style.display = 'none';
             logoutIcon.classList.remove('highlight');
+
+            // Hide the dark green icon
+            darkGreenIcon.style.display = 'none';
 
             // Reset notices display
             notices.forEach(notice => {
