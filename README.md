@@ -34,13 +34,16 @@
         .login-container {
             text-align: center;
             margin-bottom: 20px;
-            transition: all 0.3s ease;
             background-color: #ffffff;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
+            transition: transform 0.2s;
+        }
+        .login-container:hover {
+            transform: scale(1.02);
         }
         input[type="text"], input[type="password"] {
             width: calc(100% - 22px);
@@ -75,13 +78,12 @@
             background-color: #ffffff;
             border: 1px solid #ccc;
             border-radius: 12px;
-            padding: 10px;
+            padding: 20px;
             margin: 20px 0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px; /* Small size */
             font-size: 0.9em; /* Smaller font size */
-            position: relative; /* Position relative for stacking context */
         }
         .toggle-arrow {
             cursor: pointer;
@@ -222,8 +224,10 @@
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
+            width: 90%; /* Adjust the width to make it smaller */
+            max-width: 400px; /* Set a maximum width */
         }
-        .popup input[type="text"] {
+        .popup input[type="text"], .popup input[type="password"] {
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #ccc;
@@ -240,6 +244,28 @@
             border-radius: 4px;
             background-color: #f0f8ff; /* Light blue background for result box */
             color: #007BFF; /* Blue text color */
+        }
+
+        /* Confirmation Popup Styles */
+        .confirmation-popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+            justify-content: center;
+            align-items: center;
+        }
+        .confirmation-popup-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%; /* Adjust the width to make it smaller */
+            max-width: 400px; /* Set a maximum width */
         }
 
         @media (max-width: 600px) {
@@ -302,14 +328,15 @@
             <div class="notice">2. HPCL, IOCL, BPCL And NAYARA New Software Need to Update On All Sites.</div>
             <div class="notice">3. HPCL MS To Petrol e20 Conversion need to Update in FCC.</div>
             <div class="notice">4. Take All Sites Access Details with ID And Password.</div>
+            <div class="notice">5. Need Upgradation of all OIL Comp.</div>
         </div>
     </div>
 
     <div class="updates-board" id="updatesBoard">
         <div class="update-title">Upcoming Updates</div>
-        <div class="update" id="update1">1. RDB -CMS Mismatch Software</div>
+        <div class="update" id="update1">1. Critical Material Rank</div>
         <div class="update" id="update2">2. UPS Repair SOP's</div>
-        <div class="update" id="update3">3. Critical Validation SOP's</div>
+        <div class="update" id="update3">3. Software Status</div>
         <div class="update" id="update4">4. Engineer Assessments Test Ranking Status</div>
     </div>
 
@@ -331,7 +358,9 @@
             <div class="mandatory-item" id="hpclVendor"> 
                 <a href="https://drive.google.com/file/d/1ac418hLzLG4-FYYqEtTccZMU1E1X-dpW/view?usp=sharing" target="_blank">Critical Part Validation</a>
             </div>
-            <div class="mandatory-item" id="bpclBLNo"> <a href="#">Mandatory Activity 2</a></div>
+            <div class="mandatory-item" id="bpclBLNo">
+                <a href="#" id="teamViewerId">TeamViewer Id</a>
+            </div>
             <div class="mandatory-item" id="hpclItpsVendor"> <a href="#">HPCL itps vender</a></div>
             <div class="mandatory-item" id="bpclBL"> <a href="#">BPCL BL No.</a></div>
         </div>
@@ -356,6 +385,30 @@
     <div class="floating-buttons">
         <button id="loginIcon" title="Login"><i class="fas fa-sign-in-alt"></i></button>
         <button class="logout-button" id="logoutIcon" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <!-- New Popup for TeamViewer Input -->
+    <div class="popup" id="teamViewerPopup">
+        <div class="popup-content">
+            <h2>Enter TeamViewer Details</h2>
+            <input type="text" id="roCodeInput" placeholder="Ro Code" required>
+            <input type="text" id="roNameInput" placeholder="Ro Name" required>
+            <input type="text" id="teamViewerIdInput" placeholder="TeamViewer Id" required>
+            <input type="password" id="teamViewerPassInput" placeholder="TeamViewer Password" required>
+            <input type="password" id="adminPassInput" placeholder="Admin Password" required>
+            <button id="submitTeamViewerDetails">Submit</button>
+            <button id="closeTeamViewerPopup">Close</button>
+            <div class="result-box" id="teamViewerResultMessage" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- New Confirmation Popup -->
+    <div class="confirmation-popup" id="confirmationPopup">
+        <div class="confirmation-popup-content">
+            <h2>Data Submitted</h2>
+            <p>Thank You for Support</p>
+            <button id="closeConfirmationPopup">Close</button>
+        </div>
     </div>
 
     <!-- Popup for Ro Code Entry -->
@@ -384,14 +437,94 @@
         const criticalProbeContent = document.getElementById('criticalProbeContent');
         const toggleArrow = document.getElementById('toggleArrow');
 
-        // Popup functionality
+        // Popup functionality for TeamViewer Id
+        const teamViewerPopup = document.getElementById('teamViewerPopup');
+        const teamViewerIdLink = document.getElementById('teamViewerId');
+        const closeTeamViewerPopup = document.getElementById('closeTeamViewerPopup');
+        const submitTeamViewerDetails = document.getElementById('submitTeamViewerDetails');
+        const teamViewerResultMessage = document.getElementById('teamViewerResultMessage');
+
+        // Show the TeamViewer popup when the link is clicked
+        teamViewerIdLink.onclick = function() {
+            teamViewerPopup.style.display = 'flex';
+        };
+
+        // Close the TeamViewer popup
+        closeTeamViewerPopup.onclick = function() {
+            teamViewerPopup.style.display = 'none';
+            // Clear input fields
+            document.getElementById('roCodeInput').value = '';
+            document.getElementById('roNameInput').value = '';
+            document.getElementById('teamViewerIdInput').value = '';
+            document.getElementById('teamViewerPassInput').value = '';
+            document.getElementById('adminPassInput').value = '';
+            teamViewerResultMessage.style.display = 'none'; // Hide result message box
+        };
+
+        // Show the confirmation popup after successful submission
+        submitTeamViewerDetails.onclick = function() {
+            const roCode = document.getElementById('roCodeInput').value;
+            const roName = document.getElementById('roNameInput').value;
+            const teamViewerId = document.getElementById('teamViewerIdInput').value;
+            const teamViewerPass = document.getElementById('teamViewerPassInput').value;
+            const adminPass = document.getElementById('adminPassInput').value;
+
+            if (roCode && roName && teamViewerId && teamViewerPass && adminPass) {
+                fetch('https://script.google.com/macros/s/AKfycbxE8qSguwe_0RHkAM0BokcWSKG2Ic-xVBmwVAoB5M2Z0EI7vV9AzbvkAk8fuWA-gcs/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        roCode: roCode,
+                        roName: roName,
+                        teamViewerId: teamViewerId,
+                        teamViewerPass: teamViewerPass,
+                        adminPass: adminPass
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    teamViewerResultMessage.style.display = 'block';
+                    teamViewerResultMessage.textContent = data.result; // Assuming the Apps Script returns a JSON object with a 'result' key
+                    teamViewerResultMessage.style.color = 'green';
+
+                    // Show confirmation popup
+                    document.getElementById('confirmationPopup').style.display = 'flex';
+
+                    // Reset input fields
+                    document.getElementById('roCodeInput').value = '';
+                    document.getElementById('roNameInput').value = '';
+                    document.getElementById('teamViewerIdInput').value = '';
+                    document.getElementById('teamViewerPassInput').value = '';
+                    document.getElementById('adminPassInput').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    teamViewerResultMessage.style.display = 'block';
+                    teamViewerResultMessage.textContent = 'An error occurred. Please try again.';
+                    teamViewerResultMessage.style.color = 'red';
+                });
+            } else {
+                teamViewerResultMessage.style.display = 'block';
+                teamViewerResultMessage.textContent = 'Please fill in all fields.';
+                teamViewerResultMessage.style.color = 'red';
+            }
+        };
+
+        // Close the confirmation popup
+        document.getElementById('closeConfirmationPopup').onclick = function() {
+            document.getElementById('confirmationPopup').style.display = 'none';
+        };
+
+        // Existing Popup functionality for Ro Code Entry
         const roCodePopup = document.getElementById('roCodePopup');
         const submitRoCode = document.getElementById('submitRoCode');
         const closePopup = document.getElementById('closePopup');
         const resultMessage = document.getElementById('resultMessage');
 
         const data = [
-                 { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
+            { "RoCode": "118767", "Result": "RAJKAMAL ENTERPRISES-2001849" },
     { "RoCode": "119967", "Result": "NAWAL KISHORE & CO-2008500" },
     { "RoCode": "143802", "Result": "JAIRAJ & COMPANY-2004245" },
     { "RoCode": "183221", "Result": "BP RAJGARH-2008551" },
@@ -1408,13 +1541,10 @@
     { "RoCode": "16647750", "Result": "JAYRAJ FILLING STATION-IMSL" },
     { "RoCode": "16599710", "Result": "HP Raja Bharadiya FS-Paytm" },
     { "RoCode": "16598900", "Result": "GAUGHAT FILLING STATION-Paytm" }
+
         ];
 
         document.getElementById('hpclItpsVendor').onclick = function() {
-            roCodePopup.style.display = 'flex';
-        };
-
-        document.getElementById('bpclBL').onclick = function() {
             roCodePopup.style.display = 'flex';
         };
 
